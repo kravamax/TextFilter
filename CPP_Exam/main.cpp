@@ -1,103 +1,101 @@
-#include<iostream>
+#include <iostream>
 #include<stdio.h>
 #include<Windows.h>
 
 using namespace std;
 
-void StatusAction(bool status) {
-	if (status == true) 
-	{ 
-		cout << "\tON" << endl; 
-	}
-	else if (status == false)
-	{
-		cout << "\tOFF" << endl;
-	}
-}
+void filter(char*, char*, unsigned, bool&);
+
+char copy(char* str, char* str_copy);
+
+void StatusAction(bool status);
 
 int main() {
 
-	setlocale(LC_ALL, "ru");
-	SetConsoleCP(1251);
-	SetConsoleOutputCP(1251);
-	
-	char* strArray = new char[100];
+    setlocale(LC_ALL, "ru");
+    SetConsoleCP(1251);
+    SetConsoleOutputCP(1251);
 
-	cin.getline(strArray, 100);
+    int size = 20;
+    char* str = new char[size];
+    cout << "Enter string: ";
+    cin.getline(str, size);
 
-	int length = strlen(strArray);
+    unsigned len = strlen(str);
+    char* str_copy = new char[size];
+    copy(str, str_copy);
+    
+    bool status1 = false;
+    bool status2 = false;
+    bool status3 = false;
+    bool status4 = false;
+    unsigned action;
 
-	/*char* strArray_copy = new char[length + 1];
+    do {
+        cout << str_copy;
+        cout << "\n1 latin\t\t"; StatusAction(status1);
+        cout << "2 cyrillic\t"; StatusAction(status2);
+        cout << "3 punctuation\t"; StatusAction(status3);
+        cout << "4 digits \t"; StatusAction(status4);
+        cout << "5 exit \n";
+        
+        cout << "\ntype number ";
+        cin >> action;
 
-	for (int i = 0; i < length; i++)
-	{
-		strArray_copy[i] = strArray[i];
-	}*/
-	
-	//cout << strArray << endl;
-	//cout << strArray_copy << endl;
+        switch (action) {
+        case 1: filter(str, str_copy, 1, status1); break;
+        case 2: filter(str, str_copy, 2, status2); break;
+        case 3: filter(str, str_copy, 3, status3); break;
+        case 4: filter(str, str_copy, 4, status4); break;
+        }
 
-	bool status1 = false;
-	bool status2 = false;
-	bool status3 = false;
-	bool status4 = false;
-	
-	int action;
+        system("cls");
 
-	while (1)
-	{
-		cout << strArray;
+    } while (action != 5);
+   
+    delete[] str;
+    delete[] str_copy;
 
-		cout << "\n1 - latin "; StatusAction(status1);
-		cout << "2 - cyrillic "; StatusAction(status2);
-		cout << "3 - signs "; StatusAction(status3);
-		cout << "4 - numbers "; StatusAction(status4);
-		cin >> action;
+    system("pause");
+    return 0;
 
-		switch (action)
-		{
-		case 1: for (int i = 0; i < length; i++)
-		{
-			if (strArray[i] > 64 && strArray[i] < 91 || strArray[i] > 96 && strArray[i] < 123)				// latin characters
-			{
-				strArray[i] = '*';
-			}
-		} 
-			  status1 = true; break;
-		case 2: for (int i = 0; i < length; i++)
-				{
-					if (strArray[i] > 192 && strArray[i] <=255)				// cyrillic characters
-					{
-						strArray[i] = '*';
-					}
-				} status2 = true; break;
-		case 3:  for (int i = 0; i < length; i++)
-				{
-					if (strArray[i] > 0 && strArray[i] <= 47 || strArray[i] >= 58 && strArray[i] <= 64 ||
-						strArray[i] >= 91 && strArray[i] <= 96 || strArray[i] >= 123 && strArray[i] <= 191)				// other symbols
-					{
-						strArray[i] = '*';
-					}
-				} status3 = true; break;
-		case 4: for (int i = 0; i < length; i++)
-				{
-					if (strArray[i] > 47 && strArray[i] < 58)				//numbers
-					{
-						strArray[i] = '*';
-					}
-				} status4 = true; break;
-		default:
-			break;
-		}
+}
 
-		system("cls");
+void filter(char* str, char* buff, unsigned t, bool& Flag) {
+    unsigned len = strlen(str);
 
-	}
-	
-	delete[] strArray;
-	//delete[] strArray_copy;
+    for (unsigned i = 0; i < len; i++)
+        if (((t == 1) && (str[i] > 64 && str[i] < 123))
+            ||
+            ((t == 2) && (str[i] >= 'À' && str[i] <= 'ÿ'))
+            ||
+            ((t == 3) && (str[i] > 32 && str[i] < 48) || (str[i] > 57 && str[i] < 65))
+            ||
+            ((t == 4) && (str[i] > 47 && str[i] < 58)))
+            buff[i] = (!Flag) ? '*' : str[i];
 
-	cout << "\n\n";
-	system("pause");
-	return 0;
+    Flag = !Flag;
+    cout << endl << buff << endl;
+}
+
+char copy(char* str, char* str_copy) {
+
+    unsigned len = strlen(str);
+    for (int i = 0; i < len; i++)
+    {
+        str_copy[i] = str[i];
+    }
+    str_copy[len] = '\0';
+    return *str_copy;
+}
+
+void StatusAction(bool status) {
+    if (status == true)
+    {
+        cout << "ON" << endl;
+    }
+    else if (status == false)
+    {
+        cout << "OFF" << endl;
+    }
 }
